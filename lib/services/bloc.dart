@@ -93,10 +93,6 @@ class FirebaseMethods {
     }
   }
 
-  getUserDetail(userid) async {
-
-  }
-
   Future<bool> storeUserSession(token, body, body2) async {
     localStorage =
     await SharedPreferences.getInstance();
