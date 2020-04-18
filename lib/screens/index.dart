@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:voterx/screens/widgets/botton_nav.dart';
 
 class Index extends StatefulWidget {
   @override
@@ -19,6 +20,7 @@ class _IndexState extends State<Index> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: BottomNav(1).build(context),
         backgroundColor: Colors.grey[200],
         body: StreamBuilder(
             stream: getReferalStream(),
@@ -39,20 +41,10 @@ class _IndexState extends State<Index> {
                         height: 25,
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
-                          IconButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            icon: Icon(
-                              LineIcons.arrow_left,
-                              color: Colors.black,
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
+
+
                               IconButton(
                                 icon: Icon(FeatherIcons.info,color: Colors.black54,),
                                 onPressed: () {
@@ -60,14 +52,11 @@ class _IndexState extends State<Index> {
                                 },
                               ),
                               IconButton(
-                                icon: Icon(FeatherIcons.share2,color: Colors.black54,),
+                                icon: Icon(FeatherIcons.barChart2,color: Colors.black54,),
                                 onPressed: () {
 
                                 },
                               ),
-
-                            ],
-                          ),
 
                         ],
                       ),
@@ -77,7 +66,7 @@ class _IndexState extends State<Index> {
                       Padding(
                         padding: const EdgeInsets.all(20),
                         child: Text(
-                         " Config().noReferedPerson",
+                         "Oops!",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 30, fontWeight: FontWeight.bold),
@@ -86,7 +75,7 @@ class _IndexState extends State<Index> {
                       Padding(
                         padding: const EdgeInsets.all(20),
                         child: Text(
-                          "Config().noReferedText",
+                          "No polls available yet",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 16,
@@ -98,9 +87,8 @@ class _IndexState extends State<Index> {
                         height: 40,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(30),
-                          color: Colors.green[900],
                         ),
-                        width: MediaQuery.of(context).size.width * 0.70,
+                        width: MediaQuery.of(context).size.width * 0.50,
                         child: FlatButton(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
@@ -108,7 +96,7 @@ class _IndexState extends State<Index> {
                           onPressed: () {
 
                           },
-                          color: Colors.green[900],
+                          color: Colors.blue,
                           child: Text(
                             'Create Poll',
                             style: TextStyle(color: Colors.white),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:voterx/screens/index.dart';
 
+bool isLoggedIn = false;
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -11,7 +13,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Voting App',
       theme: ThemeData(
-
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),

@@ -26,6 +26,9 @@ dependencies:
   cloud_firestore: ^0.13.5
   feather_icons_flutter: ^4.7.4
   line_icons: ^0.2.0
+  fluttertoast: any
+  firebase_auth: ^0.16.0
+  shared_preferences: any
 
 dev_dependencies:
   flutter_test:
