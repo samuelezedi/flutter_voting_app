@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:voterx/main.dart';
 import 'package:voterx/screens/auth/login.dart';
+import 'package:voterx/screens/index.dart';
+import 'package:voterx/screens/mypolls.dart';
 
 class BottomNav {
   int pos = 1;
@@ -33,7 +35,10 @@ class BottomNav {
         children: <Widget>[
           GestureDetector(
             onTap: () {
+              if(this.pos!=1){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Index()));
 
+              }
             },
             child: Column(
               children: <Widget>[
@@ -49,7 +54,7 @@ class BottomNav {
             onTap: () {
               if(this.pos!=2){
                 if(isLoggedIn){
-
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => MyPolls()));
                 } else {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
                 }

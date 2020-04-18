@@ -5,6 +5,7 @@ import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:voterx/screens/mypolls.dart';
 import 'package:voterx/services/methods.dart';
 import 'package:voterx/utility/flash.dart';
 import 'package:voterx/utility/utils.dart';
@@ -29,59 +30,6 @@ class _RegisterUserState extends State<RegisterUser> {
   Repo repo = Repo();
 
 
-  keep(user, value, username) async {
-    SharedPreferences local = await SharedPreferences.getInstance();
-    var uid = local.getString('userData');
-    var token = local.getString('userToken');
-
-    await Firestore.instance
-        .collection('/pusers')
-        .where('puid', isEqualTo: uid)
-        .getDocuments()
-        .then(( chk ) async {
-      if (chk.documents.isEmpty) {
-        Firestore.instance.collection('pusers').add({
-          'puid': uid,
-          'ptoken': token,
-          'substatus': 2,
-          'time_joined': Timestamp.now(),
-          'name': username,
-          'email': user.email,
-          'online': "1",
-          'role': "3",
-          'uid': user.uid,
-          'coins': 0,
-          'wcoins' : 0
-        });
-      } else {
-        //mean existed before
-        Firestore.instance.collection('pusers')
-            .document(chk.documents[0].documentID)
-            .setData({
-          'name': username,
-          'email': user.email,
-          'online': "1",
-          'role': "3",
-          'uid': user.uid,
-          'coins': 0,
-          'wcoins' : 0
-        }, merge: true);
-      }
-
-      local.setString('userDocId', chk.documents[0].documentID);
-      isLoggedIn = true;
-
-
-      local.setInt('saved', 1);
-
-    });
-
-  }
-
-  generateUsername() {
-    Random random = new Random();
-    return random.nextInt(99999) + 10000;
-  }
 
   Future<bool> authenticateUser(FirebaseUser user) async
   {
@@ -115,7 +63,6 @@ class _RegisterUserState extends State<RegisterUser> {
               if (value) {
                 //signUser up
 
-
                     Firestore.instance.collection('users')
                         .add({
                       'name': _name,
@@ -130,17 +77,14 @@ class _RegisterUserState extends State<RegisterUser> {
 
                     isLoggedIn = true;
                     local.setInt('loggedIn', 1);
-//                    Navigator.push(context, MaterialPageRoute(builder: (context) => MyPolls()));
-
-
-
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => MyPolls()));
 
               } else {
-
                 //user already exists
                 // Navigate to next screen
                 isLoggedIn = true;
                 local.setInt('saved', 1);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => MyPolls()));
 
               }
             });

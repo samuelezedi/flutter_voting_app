@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:voterx/main.dart';
+import 'package:voterx/screens/auth/login.dart';
+import 'package:voterx/screens/create_polls.dart';
 import 'package:voterx/screens/widgets/botton_nav.dart';
 
 class Index extends StatefulWidget {
@@ -94,7 +97,11 @@ class _IndexState extends State<Index> {
                             borderRadius: BorderRadius.circular(30),
                           ),
                           onPressed: () {
-
+                            if(isLoggedIn){
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePolls()));
+                            } else {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
+                            }
                           },
                           color: Colors.blue,
                           child: Text(
