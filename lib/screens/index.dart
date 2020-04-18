@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
@@ -10,7 +11,9 @@ class Index extends StatefulWidget {
 class _IndexState extends State<Index> {
 
   getReferalStream(){
-
+    return Firestore.instance.collection('polls')
+        .where('ended', isEqualTo: false)
+        .snapshots();
   }
 
   @override
@@ -107,7 +110,7 @@ class _IndexState extends State<Index> {
                           },
                           color: Colors.green[900],
                           child: Text(
-                            'Share this App',
+                            'Create Poll',
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
