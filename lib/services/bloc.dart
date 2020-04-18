@@ -69,15 +69,7 @@ class FirebaseMethods {
         'online':2
       }).then((_) async {
         try{
-//      await _googleSignIn.disconnect();
-          await localStorage.remove('userData');
-          await localStorage.remove('tokenToken');
-          await localStorage.remove('chats');
-          await localStorage.remove('chatlist');
-          await localStorage.remove('semester');
-          await localStorage.remove('sem_uid');
           await localStorage.remove('saved');
-          await localStorage.remove('date_in_chat');
           await localStorage.clear();
           return await _auth.signOut();
         } catch(e){
