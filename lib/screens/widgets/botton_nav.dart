@@ -3,6 +3,8 @@ import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:voterx/main.dart';
+import 'package:voterx/screens/auth/login.dart';
 
 class BottomNav {
   int pos = 1;
@@ -46,7 +48,11 @@ class BottomNav {
           GestureDetector(
             onTap: () {
               if(this.pos!=2){
+                if(isLoggedIn){
 
+                } else {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
+                }
               }
             },
             child: Column(

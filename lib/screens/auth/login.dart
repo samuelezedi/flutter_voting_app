@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:voterx/screens/auth/register.dart';
+import 'package:voterx/services/methods.dart';
 import 'package:voterx/utility/flash.dart';
 
 import '../../main.dart';
@@ -22,6 +25,7 @@ class _LoginState extends State<Login> {
   bool _emailEnable = true;
   bool _passwordEnable = true;
   bool _emailFocus = false;
+  Repo repo = new Repo();
 
 
   void _submit() async {
@@ -54,92 +58,10 @@ class _LoginState extends State<Login> {
               Flash().show(context, 2, 'Email or password is incorrect', Colors.black54,
                   15, null, null);
             } else {
-              setState(() {
+              setState(( ) {
                 _isLoading = false;
                 _emailEnable = true;
                 _passwordEnable = true;
-              });
-
-              Firestore.instance
-                  .collection('pusers')
-                  .where('uid', isEqualTo: user.uid)
-                  .where('puid', isEqualTo: deviceId)
-                  .getDocuments()
-                  .then((u) {
-
-                if (u.documents.length > 0) {
-
-                  Firestore.instance
-                      .collection('pusers')
-                      .document(u.documents[0].documentID)
-                      .updateData({'online': 1}).then((_) {
-                    local.setString('userDocId', u.documents[0].documentID);
-                    isLoggedInNow = true;
-
-                    local.setInt('saved', 1);
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => ReleaseList()));
-
-                  }).catchError((e) {});
-                } else {
-
-                  // we do critical investigations
-                  Firestore.instance.collection('pusers')
-                      .where('uid', isEqualTo: user.uid)
-                      .getDocuments().then((u){
-
-                    if(u.documents[0]['pname'] == deviceName && u.documents[0]['pboard'] == deviceBoard && u.documents[0]['pmodel'] == deviceModelId){
-                      //mean this user owns this account but probably updated or deleted the app, so we'll grant access
-                      //so we'll update his puid, and delete this new entry
-                      var docIdofNew;
-                      Firestore.instance.collection('pusers')
-                          .where('puid', isEqualTo: deviceId)
-                          .getDocuments().then((_){
-                        docIdofNew = _.documents[0].documentID;
-
-                        //update
-                        Firestore.instance.collection('pusers')
-                            .document(u.documents[0].documentID)
-                            .updateData({'puid' : deviceId}).then((v){
-
-                          //delete new entry
-                          Firestore.instance.collection('pusers')
-                              .document(docIdofNew)
-                              .delete().then((_){
-                            Firestore.instance
-                                .collection('pusers')
-                                .document(u.documents[0].documentID)
-                                .updateData({'online': 1}).then((_) {
-                              local.setString('userDocId', u.documents[0].documentID);
-                              isLoggedIn = true;
-
-                              local.setInt('saved', 1);
-                              Navigator.pushReplacement(context,
-                                  MaterialPageRoute(builder: (context) => ReleaseList()));
-
-                            }).catchError((e) {});
-                          });
-                        });
-                      });
-
-                    } else {
-
-                      //                  Flash().show(
-//                      context,
-//                      2,
-//                      'This device is registered to an account already',
-//                      Colors.black54,
-//                      15,
-//                      null,
-//                      null);
-
-                      FirebaseAuth.instance.signOut();
-
-                    }
-                  });
-
-                }
-
               });
             }
           }).catchError((e) {
@@ -165,31 +87,169 @@ class _LoginState extends State<Login> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        leading: IconButton(
-          onPressed: (){
-            Navigator.pop(context);
-          },
-          icon: Icon(LineIcons.arrow_left,color: Colors.black,),
-        ),
-      ),
-        body: Builder(
-          builder: (context) {
-            this.context = context;
-            return Container(
-              child: Column(
-                children: <Widget>[
+    var brightness = MediaQuery.of(context).platformBrightness;
 
-                ],
-              ),
-            );
-          }
-        )
+    return Scaffold(
+      body: Builder(builder: (context) {
+        this.context = context;
+        return SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Flexible(
+                    child: Text(
+                      'VoterX.',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                          fontSize: 40.0,
+                          color: Colors.blue),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 60,
+                  ),
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 30.0, vertical: 10.0),
+                            child: TextFormField(
+                              style: TextStyle(
+                                color: brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                              enabled: _emailEnable,
+                              keyboardType: TextInputType.text,
+                              decoration: InputDecoration(
+                                labelText: 'Email',
+                                prefixIcon: Icon(
+                                  Icons.mail,
+                                  color: brightness == Brightness.dark
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                              ),
+                              validator: (input) => !input.contains('@')
+                                  ? 'Please Enter a Valid Email'
+                                  : null,
+                              onSaved: (input) => _email = input,
+                            )),
+                        Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 30.0, vertical: 10.0),
+                            child: TextFormField(
+                              enabled: _passwordEnable,
+                              style: TextStyle(
+                                color: brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                              keyboardType: TextInputType.text,
+                              decoration: InputDecoration(
+                                  prefixIcon: Icon(
+                                    Icons.vpn_key,
+                                    color: brightness == Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black,
+                                  ),
+                                  suffixIcon: IconButton(
+                                    icon: _obscuredIcon,
+                                    color: brightness == Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black,
+                                    iconSize: 15,
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscuredIcon = _obscuredText
+                                            ? Icon(FeatherIcons.eyeOff)
+                                            : Icon(FeatherIcons.eye);
+                                        _obscuredText =
+                                        _obscuredText ? false : true;
+                                      });
+                                    },
+                                  ),
+                                  labelText: 'Password'),
+                              validator: (input) => input.length < 6
+                                  ? 'Please Enter your Password'
+                                  : input == null
+                                  ? 'Please enter a valid password'
+                                  : null,
+                              onSaved: (input) => _password = input,
+                              obscureText: _obscuredText,
+                            )),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 30.0, vertical: 20.0),
+                          child: MaterialButton(
+                            onPressed: _isLoading ? null : _submit,
+                            disabledColor: Colors.grey,
+                            color: Colors.blue,
+                            padding: EdgeInsets.all(12.0),
+                            child: Text(
+                                _isLoading ? 'Authenticating...' : 'Login',
+                                style: TextStyle(
+                                    color: brightness == Brightness.dark
+                                        ? Colors.black
+                                        : Colors.white,
+                                    fontSize: 18.0)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+//                              side: BorderSide(color: Colors.red)
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Container(
+                          width: double.infinity,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              InkWell(
+                                  child: Text('Forgot Password?',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 15)),
+                                  onTap: () {}),
+                              InkWell(
+                                  child: Text('Register',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 15)),
+                                  onTap: () {;
+                                    Navigator.pop(context);
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterUser()));
+
+                                  }),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 30,
+                        ),
+                      ],
+                    ),
+                  )
+                ]),
+          ),
+        );
+      }),
     );
   }
 }

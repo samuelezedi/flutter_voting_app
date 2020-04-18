@@ -1,7 +1,11 @@
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voterx/screens/index.dart';
 
 bool isLoggedIn = false;
+var deviceId;
+var deviceName;
 
 void main() => runApp(MyApp());
 
@@ -15,27 +19,48 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
 
+
+    //save if user is loggedIn
+    checkUser() async {
+      SharedPreferences local = await SharedPreferences.getInstance();
+      var chkk = local.getInt('loggedIn');
+      if(chkk != null){
+        isLoggedIn = true;
+      }
+      setState(() {
+        moveOn = true;
+      });
+    }
+
+    bool moveOn = false;
+
+    @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    checkUser();
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      body: Index(),
+      body: moveOn ? Index() : Container(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
     );
   }
 }
