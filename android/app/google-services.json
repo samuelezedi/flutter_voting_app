@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "25322016664",
+    "firebase_url": "https://voterx-47816.firebaseio.com",
+    "project_id": "voterx-47816",
+    "storage_bucket": "voterx-47816.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:25322016664:android:a89cc3cd938ad9f78ce5ed",
+        "android_client_info": {
+          "package_name": "net.cubiclab.voterx"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "25322016664-orqilrmrs7u87aoc16mllcph07fls1uo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLNSdTr7XV5ATodqAdEkz_-wwAs4WXWsY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "25322016664-orqilrmrs7u87aoc16mllcph07fls1uo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
